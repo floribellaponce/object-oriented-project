@@ -15,29 +15,33 @@ class Author {
 	use ValidateUuid;
 	/**
 	 * id for the author who owns this account; this is the primary key.
+	 * @var Uuid $authorId
 	 */
 	private $authorId;
 	/**
 	 * activation token for the author account
-	 * @var Uuid $authorId
+	 * @var string $authorActivationToken
 	 */
 	private $authorActivationToken;
 	/**
 	 * avatar (image) url for author
-	 *
+	 * @var string $authorAvatarUrl
 	 */
 	private $authorAvatarUrl;
 	/**
 	 * email for author; this has a unique index.
- 	 */
+	 * @var string $authorEmail
+	 **/
 	private $authorEmail;
 	/**
-	 *hash for password for author
-	 */
+	 * hash for password for author
+	 * @var string $authorHash
+	 **/
 	private $authorHash;
 	/**
 	 *username for author; this has a unique index.
-	 */
+	 * @var string $authorUsername
+	 **/
 	private $authorUsername;
 
 	/**
