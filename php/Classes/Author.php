@@ -13,7 +13,6 @@ require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
 	 * @version 0.0.1
 	 **/
 class Author {
-	use ValidateDate;
 	use ValidateUuid;
 	/**
 	 * id for this author. This is the primary key.
