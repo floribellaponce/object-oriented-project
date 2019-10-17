@@ -53,13 +53,13 @@ class Author {
 	 **/
 public function __construct($newAuthorId, $newAuthorActivationToken, $newAuthorAvatarUrl, $newAuthorEmail, $newAuthorHash, $newAuthorUsername) {
 	try {
-		$this->setAuthorId($newAuthorId)
-		$this->set
-		$this->set
-		$this->set
-		$this->set
-		$this->set
-	} catch(\UnexpectedValueException $exception) {
+		$this->setAuthorId($newAuthorId);
+		$this->setAuthorActivationToken($newAuthorActivationToken);
+		$this->setAuthorAvatarUrl($newAuthorAvatarUrl);
+		$this->setAuthorEmail($newAuthorEmail);
+		$this->setAuthorHash($newAuthorHash);
+		$this->setAuthorUsername($newAuthorUsername);
+	} catch(UnexpectedValueException $exception) {
 		// rethrow to the caller
 		throw (new UnexpectedValueException("Unable to construct Auhtor", 0, $exception));
 	}
