@@ -1,87 +1,214 @@
 <?php
-//This is a Doc Block. This is to communicate to developers to what you are doing (what the class is about).
-/**
- *Typical Profile for an eCommerce cite //h1
- *
- * This Profile is an abbreviated example of data collected and stored about a user for eCommerce purposes. //p
- * This can be extended to include more information such as address, phone number, etc. //p
- *
- * @author Floribella Ponce <fponce2@cnm.edu> //below p tag
- **/
-//these are the state variables. These are the part of the class that will occupy memory and that will be in the database.
-class Profile {
-	// This is a mini Doc Block.
+
+namespace floribellaponce/object;
+
+require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
+
+	use Ramsey\Uuid\Uuid;
 	/**
-	 * id for this Profile; this is the primary key
-	 */
-	private $profileId;
+	 *This is a author user account.
+	 *
+	 * @author Floribella Ponce <fponce2@cnm.com>
+	 * @version 4.0.1
+	 **/
+class Author {
+	use ValidateDate;
+	use ValidateUuid;
 	/**
-	 * id for the User who owns this Profile; this is a foreign key
-	 */
-	private $userId;
+	 * id for this author. This is the primary key.
+	 * @var Uuid $authorId
+	 **/
+	private $authorId;
 	/**
-	 * first name of this person
-	 */
-	private $firstName;
+	 * activation token to validate author at point of creation.
+	 * @var string $authorActivationToken
+	 **/
+	private $authorActivationToken;
 	/**
-	 * last name of this person
-	 */
-	private $lastName;
+	 * image for this author.
+	 *v@var $authorAvatarUrl
+	 **/
+	private $authorAvatarUrl;
+	/**
+	 * email for this author. This has a unique index.
+	 * @var string $authorEmail
+	 **/
+	private $authorEmail;
+	/**
+	 * hash for author password
+	 * @var string $authorHash
+	 **/
+	private $authorHash;
+	/**
+	 * username for this author. This has a unique index.
+	 * @var string $authorUsername
+	 **/
+	private $authorUsername;
+
+
 
 	/**
-	 * accessor method for profile id. An accessor is an Output method.
-	 * Its a safe way of accessing what is currently in our data without allowing someone to manipulate it.
+	 * accessor method for author id
 	 *
-	 *@return int (the type we can expect which is integer) value of profile id  (the rest is what you should expect)
-	 */
-	//accessor will use get
-	public function getProfileId() {
-		//this is a special key word that states im talking to myself
-		return($this->profileId);
+	 * @return Uuid value of author id (or null if new author)
+	 **/
+
+	public function getAuthorId(): Uuid {
+		return ($this->authorId);
 	}
-
 	/**
-	 * mutator method for profile id. Mutator allows a person to set a new id for the profile.
+	 * mutator method for author id
 	 *
-	 * @param int $newProfileId new value of profile id. Param is short for parameter.
-	 * @throws UnexpectedValueException if $newProfileId is not an integer. Throws means we are throwing an exception. This is what happens when things go wrong.
-	 * It handles exceptional cases that shouldn't happen.
-	 */
-	public function setProfileId($newProfileId) {
-		//filter.var is php function to do canned verification data for you.
-		//FILTER_VALIDATE_INT states what you are filtering. In this case its an integer.
-		//verify the profile id is valid.
-		$newProfileId = filter_var($newProfileId, FILTER_VALIDATE_INT) ;
-		if($newProfileId === false) {
-			throw(new UnexpectedValueException("profile id is not a valid interger"));
+	 **/
+	public function setAuthorId( $newAuthorId): void {
+		try {
+			$uuid = self::validateUuid($newAuthorId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
-
-		// convert and store the profile id
-		$this->profileId = intval($newProfileId);
+		// convert and store the author id
+		$this->authorId = $uuid;
+	}
+		/**
+		 * mutator method for at handle
+		 *
+		 **/
+	public function setAuthorAvatarUrl(string $newAuthorAvatarUrl) : void {
+	// verify the avatar url is secure
+	$newAuthorAvatarUrl = trim($newAuthorAvatarUrl);
+	$newAuthorAvatarUrl = filter_var($newAuthorAvatarUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	if(empty($newAuthorAvatarUrl) === true) {
+		throw(new \InvalidArgumentException("author at handle is empty or insecure"));
+	}
+	// image for this author
+	if(strlen($newAuthorAvatarUrl) > 32) {
+		throw(new \RangeException("author at handle is too large"));
+	}
+	// store the avatar url
+	$this->authorAvatarUrl = $newAuthorAvatarUrl;
 }
 	/**
-	 * accessor method for first name.
+	 * accessor method for author activation token
 	 *
-	 * @return string value of first name
+	 * @return string value of the activation token
 	 */
-	public function getFirstName() {
-		return($this->firstName);
+	public function getAuthorActivationToken() : ?string {
+		return ($this->authorActivationToken);
+	}
+	/**
+	 * mutator method for author activation token
+	 *
+	 */
+	public function setAuthorActivationToken(?string $fnewAuthorActivationToken): void {
+		if($newAuthorActivationToken === null) {
+			$this->authorActivationToken = null;
+			return;
+		}
+		$newAuthorActivationToken = strtolower(trim($newAuthorActivationToken));
+		if(ctype_xdigit($newAuthorActivationToken) === false) {
+			throw(new\RangeException("author activation is not valid"));
+		}
+		//make sure author activation token is only 32 characters
+		if(strlen($newAuthorActivationToken) !== 32) {
+			throw(new\RangeException("author activation token has to be 32"));
+		}
+		$this->authorActivationToken = $authorActivationToken;
+	}
+	/**
+	 * accessor method for at handle
+	 *
+	 * @return string value of at handle
+	 **/
+	public function getAuthorAvatarUrl(): string {
+		return ($this->authorAvatarUrl);
+	}
+	/**
+	 * accessor method for email
+	 *
+	 * @return string value of email
+	 **/
+	public function getAuthorEmail(): string {
+		return $this->authorEmail;
+	}
+	/**
+	 * mutator method for email
+	 *
+	 **/
+	public function setAuthorEmail(string $newAuthorEmail): void {
+		// verify the email is secure
+		$newAuthorEmail = trim($newAuthorEmail);
+		$newAuthorEmail = filter_var($newAuthorEmail, FILTER_VALIDATE_EMAIL);
+		if(empty($newAuthorEmail) === true) {
+			throw(new \InvalidArgumentException("author email is empty or insecure"));
+		}
+		// verify the email will fit in the database
+		if(strlen($newAuthorEmail) > 128) {
+			throw(new \RangeException("author email is too large"));
+		}
+		// store the email
+		$this->authorEmail = $newAuthorEmail;
+	}
+	/**
+	 * accessor method for authorHash
+	 *
+	 * @return string value of hash
+	 */
+	public function getAuthorHash(): string {
+		return $this->authorHash;
 	}
 
 	/**
-	 * mutator method for first name.
+	 * mutator method for author hash password
 	 *
-	 * @param string $newFirstName new value of first class.
-	 * @throws UnexpectedValueException if $newFirstName is not valid.
 	 */
-	public function setFirstName($newFirstName) {
-		//verify the first name is valid.
-		//FILTER_SANITIZE_STRING > works on strings.
-		$newFirstName= filter_var($newFirstName, FILTER_SANITIZE_STRING) ;
-		if($newFirstName === false) (
-			throw(new UnexpectedValueException("first name is not a valid string"));
-		)
-
-		// no converter because no need to convert a string into a string.
+	public function setAuthorHash(string $newAuthorHash): void {
+		//enforce that the hash is properly formatted
+		$newAuthorHash = trim($newAuthorHash);
+		if(empty($newAuthorHash) === true) {
+			throw(new \InvalidArgumentException("author password hash empty or insecure"));
+		}
+		//enforce the hash is really an Argon hash
+		$authorHashInfo = password_get_info($newAuthorHash);
+		if($authorHashInfo["algoName"] !== "argon2i") {
+			throw(new \InvalidArgumentException("author hash is not a valid hash"));
+		}
+		//enforce that the hash is exactly 97 characters.
+		if(strlen($newAuthorHash) !== 97) {
+			throw(new \RangeException("author hash must be 97 characters"));
+		}
+		//store the hash
+		$this->authorHash = $newAuthorHash;
+	}
+	/**
+	 * accessor method for phone
+	 *
+	 * @return string value of phone or null
+	 **/
+	public function getAuthorPhone(): ?string {
+		return ($this->authorPhone);
+	}
+	/**
+	 * mutator method for phone
+	 *
+	 **/
+	public function setauthorPhone(?string $newAuthorPhone): void {
+		//if $authorPhone is null return it right away
+		if($newAuthorPhone === null) {
+			$this->authorPhone = null;
+			return;
+		}
+		// verify the phone is secure
+		$newAuthorPhone = trim($newAuthorPhone);
+		$newAuthorPhone = filter_var($newAuthorPhone, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newAuthorPhone) === true) {
+			throw(new \InvalidArgumentException("author phone is empty or insecure"));
+		}
+		// verify the phone will fit in the database
+		if(strlen($newAuthorPhone) > 32) {
+			throw(new \RangeException("author phone is too large"));
+		}
+		// store the phone
+		$this->authorPhone = $newAuthorPhone;
+	}
 }
-?>
