@@ -1,8 +1,9 @@
 <?php
 
 namespace FloribellaPonce\ObjectOrientedProject;
+require_once("autoload.php");
 require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
-use Ramsey\Uuid\Uuid;require_once("autoload.php");
+use http\Exception\UnexpectedValueException;use Ramsey\Uuid\Uuid;
 
 /**
  * This is the information that is stored for a author.
@@ -18,10 +19,12 @@ class Author {
 	private $authorId;
 	/**
 	 * activation token for the author account
+	 * @var Uuid $authorId
 	 */
 	private $authorActivationToken;
 	/**
 	 * avatar (image) url for author
+	 *
 	 */
 	private $authorAvatarUrl;
 	/**
@@ -36,6 +39,31 @@ class Author {
 	 *username for author; this has a unique index.
 	 */
 	private $authorUsername;
+
+	/**
+	 *constructor for this author
+	 *
+	 * @param string $newAuthorId string containing new author id
+	 * @param string $newAuthorActivationToken string containing new activation token
+	 * @param string $newAuthorAvatarUrl string containing new avatar url
+	 * @param string $newAuthorEmail string containing new email
+	 * @param string $newAuthorHash string containing new hash
+	 * @param string $newAuthorUsername string containing new username
+	 * @throw UnexpectedValueException if any of the parameters are invalid
+	 **/
+public function __construct($newAuthorId, $newAuthorActivationToken, $newAuthorAvatarUrl, $newAuthorEmail, $newAuthorHash, $newAuthorUsername) {
+	try {
+		$this->setAuthorId($newAuthorId)
+		$this->set
+		$this->set
+		$this->set
+		$this->set
+		$this->set
+	} catch(\UnexpectedValueException $exception) {
+		// rethrow to the caller
+		throw (new UnexpectedValueException("Unable to construct Auhtor", 0, $exception));
+	}
+}
 	/**
 	 * accessor method for author id.
 	 *
