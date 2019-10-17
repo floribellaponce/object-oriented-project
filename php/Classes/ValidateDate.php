@@ -1,5 +1,5 @@
 <?php
-namespace floribellaponce\object;
+namespace FloribellaPonce\ObjectOrientedProject;
 /**
  * Trait to Validate a mySQL Date
  *
