@@ -1,7 +1,8 @@
 <?php
 
-namespace floribellaponce/object;
+namespace FloribellaPonce\ObjectOrientedProject;
 
+require_once("autoload.php");
 require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
 
 	use Ramsey\Uuid\Uuid;
@@ -9,7 +10,7 @@ require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
 	 *This is a author user account.
 	 *
 	 * @author Floribella Ponce <fponce2@cnm.com>
-	 * @version 4.0.1
+	 * @version 0.0.1
 	 **/
 class Author {
 	use ValidateDate;
