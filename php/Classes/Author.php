@@ -253,7 +253,7 @@ class Author implements \JsonSerializable {
 		if(strlen($newAuthorUsername) > 32) {
 			throw(new\RangeException("username is too long"));
 		}
-		//store the avatar url
+		//store the author username
 		$this->authorUsername = $newAuthorUsername;
 	}
 	/**
