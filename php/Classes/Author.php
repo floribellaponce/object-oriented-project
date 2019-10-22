@@ -234,7 +234,7 @@ class Author implements \JsonSerializable {
 		return ($this->authorUsername);
 	}
 	/**
-	 * mutator method for author email
+	 * mutator method for author username
 	 *
 	 * @param string $newAuthorUsername new value for author username
 	 * @throws \InvalidArgumentException  if $newAuthorUsername is not a string
