@@ -281,7 +281,7 @@ class Author implements \JsonSerializable {
 	 * @throws \TypeError if $pdo is not a PDO connection object
 	 */
 	public function update(\PDO $pdo) : void {
-		$query = "UPDATE author SET authorId=:authorId, authorActivationToken=:authorActivationToken, authorAvatarUrl=:authorAvatarUrl, authorEmail=:authorEmail, authorHash=:authorHash, authorUsername:authorUsername WHERE authorId = :authorId";
+		$query = "UPDATE author SET authorId=:authorId, authorActivationToken=:authorActivationToken, authorAvatarUrl=:authorAvatarUrl, authorEmail=:authorEmail, authorHash=:authorHash, authorUsername=:authorUsername WHERE authorId = :authorId";
 		$statement = $pdo->prepare($query);
 
 		$parameters = ["authorId" => $this->authorId->getBytes(), "authorActivationToken" => $this->authorActivationToken, "authorAvatarUrl" => $this->authorAvatarUrl, "authorEmail" => $this->authorEmail, "authorHash" => $this->authorHash, "authorUsername" => $this->authorUsername];
@@ -302,15 +302,15 @@ class Author implements \JsonSerializable {
 		$statement->execute($parameters);
 	}
 	/**
-	 * gets the author username by author id
+	 * gets the author by author id
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @param Uuid|string $authorId author id to search for
-	 * @return authorUsername|null authorUsername found or null if not found
+	 * @return Author|null Author found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
 	 */
-	public static function getAuthorUsernameByAuthorId(\PDO $pdo, $authorId): authorUsername {
+	public static function getAuthorByAuthorId(\PDO $pdo, $authorId): Author {
 		try {
 			$authorId = self::validateUuid($authorId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
@@ -323,16 +323,16 @@ class Author implements \JsonSerializable {
 		$statement->execute($parameters);
 
 		try {
-			$authorUsername = null;
+			$Author = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$authorUsername = new authorUsername($row["authorId"], $row["authorActivationToken"], $row["authorAvatarUrl"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
+				$Author = new Author($row["authorId"], $row["authorActivationToken"], $row["authorAvatarUrl"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
 			}
 		} catch (\Exception $exception) {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
-		return($authorUsername);
+		return($Author);
 	}
 	/**
 	 * gets Author by author email
