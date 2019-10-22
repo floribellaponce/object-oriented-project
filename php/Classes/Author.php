@@ -314,7 +314,7 @@ class Author implements \JsonSerializable {
 		try {
 			$authorId = self::validateUuid($authorId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-			throw(new \PDOException($exception->getMessage(), 0, $exception)
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 		$query = "SELECT authorId, authorActivationToken, authorAvatarUrl, authorEmail, authorHash, authorUsername FROM author WHERE authorId = :authorId";
 		$statement = $pdo->prepare($query);
@@ -344,7 +344,6 @@ class Author implements \JsonSerializable {
 	 * @throws \TypeError when variables are not the correct data type
 	 */
 	public static function getAuthorbyAuthorEmail(\PDO $pdo, string $authorEmail) : \SplFixedArray {
-		try {
 			$authorEmail = trim($authorEmail);
 			$authorEmail = filter_var($authorEmail, FILTER_VALIDATE_EMAIL);
 			if(empty($authorEmail) === true) {
@@ -359,7 +358,18 @@ class Author implements \JsonSerializable {
 			$parameters = ["authorEmail"=> $authorEmail];
 			$statement-> execute($parameters);
 
-			$authors = new \SplFixedArray($statement->rowCount())
+			$authors = new \SplFixedArray($statement->rowCount());
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			while(($row = $statement->fetch()) !== false) {
+				try{
+					$author = new Author($row["authorId"], $row["authorActivationToken"], $row["authorAvatarUrl"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
+					$authors[$authors->key()] = $author;
+					$authors->next();
+				} catch(\Exception $exception) {
+					throw(new \PDOException($exception->getMessage(), 0, $exception));
+				}
+				return($authors);
+			}
 	}
 	/**
 	 * formats the state variables for JSON serialization
