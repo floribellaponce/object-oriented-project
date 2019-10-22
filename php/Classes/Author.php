@@ -2,6 +2,8 @@
 namespace FloribellaPonce\ObjectOrientedProject;
 require_once("autoload.php");
 require_once(dirname(__DIR__) . "/vendor/autoload.php");
+
+use Cassandra\Statement;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -298,6 +300,66 @@ class Author implements \JsonSerializable {
 
 		$parameters = ["authorId" => $this->authorId->getBytes()];
 		$statement->execute($parameters);
+	}
+	/**
+	 * gets the author username by author id
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param Uuid|string $authorId author id to search for
+	 * @return authorUsername|null authorUsername found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when a variable are not the correct data type
+	 */
+	public static function getAuthorUsernameByAuthorId(\PDO $pdo, $authorId): authorUsername {
+		try {
+			$authorId = self::validateUuid($authorId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception)
+		}
+		$query = "SELECT authorId, authorActivationToken, authorAvatarUrl, authorEmail, authorHash, authorUsername FROM author WHERE authorId = :authorId";
+		$statement = $pdo->prepare($query);
+
+		$parameters = ["authorId" => $authorId->getBytes()];
+		$statement->execute($parameters);
+
+		try {
+			$authorUsername = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$authorUsername = new authorUsername($row["authorId"], $row["authorActivationToken"], $row["authorAvatarUrl"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
+			}
+		} catch (\Exception $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($authorUsername);
+	}
+	/**
+	 * gets Author by author email
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param Uuid|string $authorEmail author email to search by
+	 * @return \SplFixedArray SplFixedArray of Authors found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 */
+	public static function getAuthorbyAuthorEmail(\PDO $pdo, string $authorEmail) : \SplFixedArray {
+		try {
+			$authorEmail = trim($authorEmail);
+			$authorEmail = filter_var($authorEmail, FILTER_VALIDATE_EMAIL);
+			if(empty($authorEmail) === true) {
+				throw(new \PDOException("author email is not valid"));
+			}
+			$authorEmail = str_replace("_","\\_", str_replace("%", "\\%", $authorEmail));
+
+			$query = "SELECT authorId, authorActivationToken, authorAvatarUrl, authorEmail, authorHash, authorUsername FROM author WHERE authorEmail = :authorEmail";
+			$statement = $pdo->prepare($query);
+
+			$authorEmail = "%$authorEmail%";
+			$parameters = ["authorEmail"=> $authorEmail];
+			$statement-> execute($parameters);
+
+			$authors = new \SplFixedArray($statement->rowCount())
 	}
 	/**
 	 * formats the state variables for JSON serialization
