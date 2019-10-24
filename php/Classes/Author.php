@@ -3,7 +3,6 @@ namespace FloribellaPonce\ObjectOrientedProject;
 require_once("autoload.php");
 require_once(dirname(__DIR__) . "/vendor/autoload.php");
 
-use Cassandra\Statement;
 use Ramsey\Uuid\Uuid;
 
 /**
